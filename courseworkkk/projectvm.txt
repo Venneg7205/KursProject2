@@ -1,0 +1,54 @@
+﻿//public ProjectViewModel(ProjectWindow window)
+        //{
+        //    this.window = window;
+        //    ProjectsList = new ObservableCollection<Project>();
+        //    using (var connection = new SqliteConnection("Data Source=WEBWorkshop.db"))
+        //    {
+        //        connection.Open();
+        //        SqliteCommand command = connection.CreateCommand();
+        //        command.Connection = connection;
+        //        command.CommandText = "SELECT * FROM Project";
+        //        using (SqliteDataReader reader = command.ExecuteReader())
+        //        {
+        //            if (reader.HasRows) // если есть данные
+        //            {
+        //                while (reader.Read())
+        //                {
+        //                    Project project = new Project();
+        //                    project.id_Project = reader.GetInt32(0);
+        //                    project.id_Client = reader.GetInt32(1);
+        //                    project.id_ExecutorProject = reader.GetInt32(2);
+        //                    project.NameProject = reader.GetString(3);
+        //                    project.PriceProject = reader.GetString(4);
+        //                    project.DeadlineProject = reader.GetString(5);
+        //                    project.StateProject = reader.GetString(6);
+        //                    project.ImageState = reader.GetString(7);
+        //                    ProjectsList.Add(project);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+        //private RelayCommand addCommand;
+        //public RelayCommand AddCommand
+        //{
+        //    get
+        //    {
+        //        return addCommand ??
+        //          (addCommand = new RelayCommand(obj =>
+        //          {
+        //              Project project = new Project();
+        //              project.ID_Client = (window.cbClient.SelectedItem as Client).ID_Client;
+        //              project.ID_ExecutorProject = (window.cbExecutorProject.SelectedItem as ExecutorProject).ID_ExecutorProject;
+        //              project.NameProject = window.nameProject.Text;
+        //              project.PriceProject = window.priceProject.Text;
+        //              project.DeadlineProject = window.deadlineProject.Text;
+        //              project.StateProject = window.stateProject.Text;
+        //              using (ModelContext db = new ModelContext())
+        //              {
+        //                  db.Project.Add(project);
+        //                  db.SaveChanges();
+        //              }
+        //          }));
+        //    }
+        //}

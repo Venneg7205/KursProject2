@@ -1,0 +1,120 @@
+using courseworkkk.Model;
+using courseworkkk.View;
+using Microsoft.Data.Sqlite;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+
+namespace courseworkkk.ViewModel
+{
+    class ClientViewModel : INotifyPropertyChanged
+    {
+
+        private ClientWindow ClientW;
+        private Client selectedClient;
+        public ObservableCollection<Client> Clients { get; set; }
+        public Client SelectedClient
+        {
+            get { return selectedClient; }
+            set
+            {
+                selectedClient = value;
+                OnPropertyChanged("SelectedClient");
+            }
+        }
+        private RelayCommand addCommand;
+        public RelayCommand AddCommand
+        {
+            get
+            {
+                return addCommand ??
+                  (addCommand = new RelayCommand(obj =>
+                  {
+                      Client client = new Client();
+                      client.FirstName = ClientW.FirstName.Text;
+                      client.SecondName = ClientW.SecondName.Text;
+                      client.LastName = ClientW.LastName.Text;
+                      client.DateBirth = ClientW.DateBirth.Text;
+                      client.Passport = ClientW.Passport.Text;
+                      client.Address = ClientW.Address.Text;
+                      client.Insert();
+                      Clients.Add(client);
+                  }));
+            }
+        }
+        private RelayCommand updateCommand;
+        public RelayCommand UpdateCommand
+        {
+            get
+            {
+                return updateCommand ?? 
+                    (updateCommand = new RelayCommand(obj =>
+                {
+                    Client client = obj as Client;
+                    client.FirstName = ClientW.FirstName.Text;
+                    client.SecondName = ClientW.SecondName.Text;
+                    client.LastName = ClientW.LastName.Text;
+                    client.DateBirth = ClientW.DateBirth.Text;
+                    client.Passport = ClientW.Passport.Text;
+                    client.Address = ClientW.Address.Text;
+                    client.Update(client.ID_Client);
+                }));
+            }
+        }
+        private RelayCommand removeCommand;
+        public RelayCommand RemoveCommand
+        {
+            get
+            {
+                return removeCommand ?? (removeCommand = new RelayCommand(obj =>
+                {
+                    Client client = obj as Client;
+                    client.Delete(client.ID_Client);
+                    Clients.Remove(client);
+                }));
+            }
+        }
+        public ClientViewModel(ClientWindow window)
+        {
+            this.ClientW = window;
+            Clients = new ObservableCollection<Client>();
+            using (var connection = new SqliteConnection("Data Source=WEBWorkshop.db"))
+            {
+                connection.Open();
+                SqliteCommand command = connection.CreateCommand();
+                command.Connection = connection;
+                command.CommandText = "SELECT * FROM Client";
+                using (SqliteDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            Client client = new Client();
+                            client.ID_Client = int.Parse(reader.GetValue(0).ToString());
+                            client.FirstName = reader.GetValue(1).ToString();
+                            client.SecondName = reader.GetValue(2).ToString();
+                            client.LastName = reader.GetValue(3).ToString();
+                            client.DateBirth = reader.GetValue(4).ToString();
+                            client.Passport = reader.GetValue(5).ToString();
+                            client.Address = reader.GetValue(6).ToString();
+                            Clients.Add(client);
+                        }
+                    }
+                }
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+    }
+}
